@@ -1,0 +1,134 @@
+image: registry.gitlab.com/hellohealthgroup/utilities/builder:v1.3
+
+variables:
+  DOCKER_DRIVER: overlay2
+  ROOT_REGISTRY: "registry.gitlab.com/hellohealthgroup/sidis/consumer-database"
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+stages:
+  - build-staging
+  - deploy-staging
+  - build-production
+  - deploy-production
+
+
+###########################
+########## BUILD ##########
+###########################
+.build:
+  tags:
+    - hhg
+    - gitlab-runner-manager
+  interruptible: true
+  script:
+    # Get BUILD_VERSION
+    - if [ ! -e version.txt ]; then echo "1.0.0.<build>-default-version" > version.txt; echo "file version.txt is missing..."; fi
+    - export BUILD_VERSION=$(sed "s/<build>/$CI_PIPELINE_IID/g" version.txt)
+    - echo $BUILD_VERSION
+
+    - export IMAGE_NAME=$CI_REGISTRY_IMAGE:$BUILD_VERSION-$SITE
+    - echo $IMAGE_NAME
+
+    - docker login -u $CUSTOM_REGISTRY_USER -p $CUSTOM_REGISTRY_PASSWORD $CI_REGISTRY
+    - DOCKER_BUILDKIT=1 docker build --build-arg GITLAB_READ_TOKEN_USER=$GITLAB_READ_TOKEN_USER --build-arg GITLAB_READ_TOKEN_PASSWORD=$GITLAB_READ_TOKEN_PASSWORD -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+  only:
+    - main
+
+build-hhg-sidis-fe-image-staging:
+  extends: .build
+  stage: build-staging
+  before_script:
+    - export SITE=hhg-sidis-fe-staging
+    - mv k8s-manifest/env_config/staging/.env.sidis-fe-staging .env
+
+build-hhg-sidis-fe-image-prod:
+  extends: .build
+  stage: build-production
+  dependencies:
+    - deploy-hhg-sidis-fe-staging
+  before_script:
+    - export SITE=hhg-sidis-fe-prod
+    - mv k8s-manifest/env_config/staging/.env.sidis-fe-prod .env
+  when: manual
+  allow_failure: false
+
+
+###########################
+####### DEPLOYMENT ########
+###########################
+.deploy:
+  # image: registry.gitlab.com/hellohealthgroup/utilities/deployer:v3
+  tags:
+    - gitlab-runner-manager
+    - hhg
+  interruptible: true
+  script:
+    # Get BUILD_VERSION
+    - if [ ! -e version.txt ]; then echo "1.0.0.<build>-default-version" > version.txt; echo "file version.txt is missing..."; fi
+    - export BUILD_VERSION=$(sed "s/<build>/$CI_PIPELINE_IID/g" version.txt)
+    - echo $BUILD_VERSION
+
+    # Create values.yaml file
+    - cd ${HELM_CHART_PATH}
+    - envsubst < ${HELM_VALUES_FILE}-example > ${HELM_VALUES_FILE}
+
+    # Deploy to k8s
+    - helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} --namespace=${HELM_NAMESPACE} -f ${HELM_VALUES_FILE}
+    - kubectl --namespace=${HELM_NAMESPACE} rollout status deployment ${HELM_RELEASE_NAME} --timeout=600s
+
+deploy-hhg-sidis-fe-staging:
+  stage: deploy-staging
+  extends: .deploy
+  dependencies:
+    - build-hhg-sidis-fe-image-staging
+  before_script:
+    - export SITE=hhg-sidis-fe-staging
+    - echo ${CI_COMMIT_REF_SLUG}
+
+    # K8s authentication
+    - export KUBECONFIG=${KUBECONFIG_STAGING}
+
+    ### Relating to Deploy
+    - export HELM_RELEASE_NAME=hhg-sidis-fe-staging
+    - export HELM_VALUES_FILE="${CI_PROJECT_DIR}/k8s-manifest/staging/values.yaml"
+    - export HELM_CHART_PATH="${CI_PROJECT_DIR}/k8s-manifest/staging"
+    - export HELM_NAMESPACE="sidis-staging"
+
+    - export INGRESS_DOMAIN=staging-sidis.hellohealthgroup.com
+    - export INGRESS_SECRET=hellohealthgroup-ssl
+  environment:
+    name: hhg-sidis-fe-staging
+    url: https://staging-sidis.hellohealthgroup.com
+    # on_stop: clean-up-BACSI
+  only:
+    - main
+
+deploy-hhg-sidis-fe-prod:
+  stage: deploy-production
+  extends: .deploy
+  dependencies:
+    - build-hhg-sidis-fe-image-prod
+  before_script:
+    - export SITE=hhg-sidis-fe-prod
+    - echo ${CI_COMMIT_REF_SLUG}
+
+    # K8s authentication
+    - export KUBECONFIG=${KUBECONFIG_PROD}
+
+    ### Relating to Deploy
+    - export HELM_RELEASE_NAME=hhg-sidis-fe-prod
+    - export HELM_VALUES_FILE="${CI_PROJECT_DIR}/k8s-manifest/production/values.yaml"
+    - export HELM_CHART_PATH="${CI_PROJECT_DIR}/k8s-manifest/production"
+    - export HELM_NAMESPACE="sidis-prod"
+
+    - export INGRESS_DOMAIN=sidis.hellohealthgroup.com
+    - export INGRESS_SECRET=hellohealthgroup-ssl
+  environment:
+    name: hhg-sidis-fe-prod
+    url: https://sidis.hellohealthgroup.com
+  only:
+    - main

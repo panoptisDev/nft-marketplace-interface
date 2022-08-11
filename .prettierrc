@@ -1,0 +1,14 @@
+{
+	"semi": false,
+	"singleQuote": true,
+	"useTabs": true,
+	"tabWidth": 2,
+	"printWidth": 80,
+	"bracketSpacing": true,
+	"bracketSameLine": true,
+	"trailingComma": "none",
+	"importOrder": ["react", "next", "<THIRD_PARTY_MODULES>", "^[(.|..)/]"],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true,
+	"importOrderGroupNamespaceSpecifiers": true
+}

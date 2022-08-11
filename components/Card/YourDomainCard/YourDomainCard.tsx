@@ -2,23 +2,20 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+// import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { Modal } from '@mui/material'
-import { Switch } from 'components/Switch'
-// import { DOMAIN_TYPE } from 'constants/constants'
 import { useActiveWeb3React } from 'hooks/useActiveWeb3React'
+import { createAuction, createFixedPrice } from 'utils/callContract'
 
-// import { createAuction, createFixedPrice } from 'utils/callContract'
 import { YourNFTCardProps } from '.'
 import {
-	ButtonSetting,
+	// ButtonSetting,
 	OnSaleWrap, // YourDomainCardName,
 	YourDomainCardWrap
 } from './YourDomainCard.styled'
 
 function YourDomainCard({ id, tokenURI }: YourNFTCardProps) {
 	const { account, library } = useActiveWeb3React()
-	console.log(id)
 	// fixed price
 	const [open, setOpen] = useState<boolean>(false)
 	const [price, setPrice] = useState<string>('')
@@ -45,10 +42,8 @@ function YourDomainCard({ id, tokenURI }: YourNFTCardProps) {
 		if (!price) return alert('enter price and duration')
 
 		try {
-			console.log('submitting')
-			// const tx = await createFixedPrice(library, account, type, id, price)
-			// console.log(tx)
-			alert('create fixed price success')
+			await createFixedPrice(library, account, id, price)
+			alert('Create fixed price success')
 		} catch (error: any) {
 			alert(error.message)
 		}
@@ -59,17 +54,14 @@ function YourDomainCard({ id, tokenURI }: YourNFTCardProps) {
 		if (!startPrice || !duration) return alert('enter price and duration')
 
 		try {
-			console.log('submitting')
-			// const tx = await createAuction(
-			// 	library,
-			// 	account,
-			// 	DOMAIN_TYPE.Domain,
-			// 	id,
-			// 	startPrice,
-			// 	minBidIncrement,
-			// 	duration
-			// )
-			// console.log(tx)
+			await createAuction(
+				library,
+				account,
+				id,
+				startPrice,
+				minBidIncrement,
+				duration
+			)
 			alert('create auction success')
 		} catch (error: any) {
 			alert(error.message)
@@ -86,6 +78,7 @@ function YourDomainCard({ id, tokenURI }: YourNFTCardProps) {
 				<div>
 					<input
 						placeholder="price"
+						type="number"
 						value={price}
 						onChange={(e) => setPrice(e.target.value)}
 					/>

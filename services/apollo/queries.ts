@@ -1,22 +1,20 @@
 import { gql } from '@apollo/client'
 
 export const GET_NFT_ON_SALE = gql`
-	query GetNFTOnSale($nft: String!) {
-		auctions(first: 50, skip: 0) {
+	query GetNFTOnSale {
+		auctions {
 			id
-			nft
 			nftId
-			nftUri
+			nftURI
 			start
 			end
 			hightestBid
 			highestBidder
 		}
-		fixedPrices(first: 50, skip: 0) {
+		fixedPrices {
 			id
-			nft
 			nftId
-			nftUri
+			nftURI
 			start
 			hightestBid
 			highestBidder
@@ -28,7 +26,7 @@ export const GET_YOUR_NFT_ON_SALE = gql`
 	query GetYourNFTOnSale($nft: String!, $account: String!, $sale: Int!) {
 		nfts(where: { id_contains: $nft, ownerSale: $account, sale: $sale }) {
 			id
-			nftUri
+			nftURI
 			owner
 			ownerSale
 			sale
@@ -44,7 +42,7 @@ export const GET_AUCTIONS_BIDED = gql`
 			auction {
 				id
 				nftId
-				nftUri
+				nftURI
 				start
 				end
 				hightestBid

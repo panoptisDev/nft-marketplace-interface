@@ -9,7 +9,7 @@ import { Description, Title, TopPage } from 'components'
 import { DomainCardProps } from 'components/Card/DomainCard'
 import { DomainCarousel } from 'components/pages/home/DomainCarousel'
 import { InfoNumber } from 'components/pages/home/InfoNumber'
-import { MapEcosystem } from 'components/pages/home/MapEcosystem'
+// import { MapEcosystem } from 'components/pages/home/MapEcosystem'
 import { RoadMap } from 'components/pages/home/RoadMap'
 import DomainSvg from 'public/images/noun-domain.svg'
 import InternetSvg from 'public/images/noun-internet.svg'
@@ -287,7 +287,7 @@ const Home: NextPage = () => {
 				/>
 			</SectionGray>
 
-			<MapEcosystem />
+			{/* <MapEcosystem /> */}
 
 			<RoadMap />
 		</>

@@ -3,12 +3,7 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_tld",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_domain",
+				"name": "_nft",
 				"type": "address"
 			}
 		],
@@ -22,12 +17,6 @@
 				"indexed": false,
 				"internalType": "address",
 				"name": "deployed",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "nft",
 				"type": "address"
 			},
 			{
@@ -65,12 +54,6 @@
 				"indexed": false,
 				"internalType": "address",
 				"name": "deployed",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "nft",
 				"type": "address"
 			},
 			{
@@ -117,11 +100,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_nft",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "_nftId",
 				"type": "uint256"
@@ -156,11 +134,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_nft",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "_nftId",
 				"type": "uint256"
@@ -183,8 +156,14 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "domain",
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "fixedPrices",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -196,14 +175,8 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "fixedPrices",
+		"inputs": [],
+		"name": "nft",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -230,27 +203,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "nft",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "nftId",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "tld",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",

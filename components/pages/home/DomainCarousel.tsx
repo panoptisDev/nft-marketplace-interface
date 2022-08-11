@@ -11,6 +11,9 @@ const ButtonMore = styled(Button)`
 	background-color: ${({ theme }) => theme?.colors?.darkPurple4};
 	line-height: 1.4;
 	padding: 13px 24px;
+	&:hover {
+		background: linear-gradient(310deg, #268d94 25%, #417b52 100%);
+	}
 	&.MuiButton-endIcon {
 		> *:nth-of-type(1) {
 			font-size: 16px !important;

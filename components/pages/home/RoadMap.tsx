@@ -20,7 +20,7 @@ const RoadMapTooltipWrapper = styled.div`
 		bottom: 1px;
 		left: 1px;
 		border-radius: 7px;
-		background-color: ${({ theme }) => theme?.colors?.darkPurple4};
+		background: linear-gradient(310deg, #268d94 25%, #417b52 100%);
 	}
 	&:after {
 		content: '';

@@ -23,11 +23,7 @@ const styleButtonGradient = css`
 		left: 50%;
 		width: 200%;
 		height: 200%;
-		background-image: linear-gradient(
-			136.74deg,
-			${(props) => props.theme?.colors?.blue4} 1.01%,
-			${(props) => props.theme?.colors?.pink4} 98.87%
-		);
+		background-image: linear-gradient(310deg, #268d94 25%, #417b52 100%);
 		content: '';
 		transform: translate(-50%, -50%);
 		transition: 0.25s all linear;

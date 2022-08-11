@@ -1,16 +1,16 @@
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useMemo, useState } from 'react'
 
-// import { NATIVE_COIN } from 'constants/networks'
-// import { useActiveWeb3React } from 'hooks/useActiveWeb3React'
 import type { NextPage } from 'next'
 
-// import { useQuery } from '@apollo/client'
-// import { formatEther } from '@ethersproject/units'
+import { useQuery } from '@apollo/client'
+import { formatEther } from '@ethersproject/units'
 import { Container, Grid, Tab, Tabs } from '@mui/material'
 import { Description, TabPanel, TopPage } from 'components'
-// import { DomainCard } from 'components/Card/DomainCard'
+import { DomainCard } from 'components/Card/DomainCard'
 import { NFT_BID_TYPE } from 'constants/constants'
-// import { GET_NFT_ON_SALE } from 'services/apollo/queries'
+import { NATIVE_COIN } from 'constants/networks'
+// import { useActiveWeb3React } from 'hooks/useActiveWeb3React'
+import { GET_NFT_ON_SALE } from 'services/apollo/queries'
 import styled from 'styled-components'
 import { Section } from 'styles'
 
@@ -43,7 +43,7 @@ const TabCustom = styled(Tabs)`
 		.MuiTabs-indicator {
 			z-index: -1;
 			height: 100%;
-			background-color: ${({ theme }) => theme?.colors?.pink4};
+			background: linear-gradient(310deg, #268d94 25%, #417b52 100%);
 			border-radius: ${({ theme }) => theme?.borderRadiusBase};
 		}
 	}
@@ -90,17 +90,16 @@ const Home: NextPage = () => {
 
 	const [bidType, setBidType] = useState<NFT_BID_TYPE>(NFT_BID_TYPE.auction)
 
-	// const { loading, error, data } = useQuery(GET_NFT_ON_SALE, {
-	// 	variables: { nft },
-	// 	pollInterval: 12000
-	// })
+	const { loading, error, data } = useQuery(GET_NFT_ON_SALE, {
+		pollInterval: 12000
+	})
 
-	// const renderList = useMemo(() => {
-	// 	if (loading || error || !data) return []
-	// 	const { auctions, fixedPrices } = data
-	// 	if (bidType === NFT_BID_TYPE.auction) return auctions
-	// 	return fixedPrices
-	// }, [data, loading, error, bidType])
+	const renderList = useMemo(() => {
+		if (loading || error || !data) return []
+		const { auctions, fixedPrices } = data
+		if (bidType === NFT_BID_TYPE.auction) return auctions
+		return fixedPrices
+	}, [data, loading, error, bidType])
 
 	const handleChangeBidType = (
 		_: SyntheticEvent<Element, Event>,
@@ -109,18 +108,18 @@ const Home: NextPage = () => {
 		setBidType(value)
 	}
 
-	// const renderButtonProps = (price: string) => {
-	// 	const formattedPrice = formatEther(price)
-	// 	// eslint-disable-next-line  @typescript-eslint/no-inferrable-types
-	// 	let children: string = `Buy ${formattedPrice} ${NATIVE_COIN.symbol}`
-	// 	if (bidType === NFT_BID_TYPE.auction) {
-	// 		// eslint-disable-next-line  @typescript-eslint/no-inferrable-types
-	// 		children = 'Bid'
-	// 	}
-	// 	return {
-	// 		children
-	// 	}
-	// }
+	const renderButtonProps = (price: string) => {
+		const formattedPrice = formatEther(price)
+		// eslint-disable-next-line  @typescript-eslint/no-inferrable-types
+		let children: string = `Buy ${formattedPrice} ${NATIVE_COIN.symbol}`
+		if (bidType === NFT_BID_TYPE.auction) {
+			// eslint-disable-next-line  @typescript-eslint/no-inferrable-types
+			children = 'Bid'
+		}
+		return {
+			children
+		}
+	}
 
 	// if (loading) return <div>Loading...</div>
 	// if (error) return <div>Error fetch subgraphs</div>
@@ -153,7 +152,7 @@ const Home: NextPage = () => {
 					</TabHead>
 					<TabPanel value={bidType} index={NFT_BID_TYPE.auction}>
 						<Grid container columns={12} spacing={{ xl: 4, md: 3, xs: 2 }}>
-							{/* {renderList.length ? (
+							{renderList.length ? (
 								renderList.map((domain: any, index?: number) => (
 									<Grid
 										item
@@ -170,12 +169,12 @@ const Home: NextPage = () => {
 								))
 							) : (
 								<div>No TopLevelDomain {bidType.toString()}</div>
-							)} */}
+							)}
 						</Grid>
 					</TabPanel>
 					<TabPanel value={bidType} index={NFT_BID_TYPE.fixedPrice}>
 						<Grid container columns={12} spacing={{ xl: 4, md: 3, xs: 2 }}>
-							{/* {renderList.length ? (
+							{renderList.length ? (
 								renderList.map((domain: any, index?: number) => (
 									<Grid
 										item
@@ -192,7 +191,7 @@ const Home: NextPage = () => {
 								))
 							) : (
 								<div>No Domain {bidType.toString()}</div>
-							)} */}
+							)}
 						</Grid>
 					</TabPanel>
 				</Container>

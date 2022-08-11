@@ -156,7 +156,7 @@ export const cssBorderGradientHover = css`
 		bottom: 0;
 		left: 0;
 		opacity: 0;
-		background-image: linear-gradient(136.74deg, #1470d6 1.01%, #cf1fbd 98.87%);
+		background-image: linear-gradient(310deg, #268d94 25%, #417b52 100%);
 		border-radius: 15px;
 		content: '';
 		pointer-events: none;

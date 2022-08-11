@@ -123,6 +123,9 @@ const ButtonMore = styled(Button)`
 	background-color: ${({ theme }) => theme?.colors?.darkPurple4};
 	line-height: 1.4;
 	text-transform: capitalize;
+	&:hover {
+		background: linear-gradient(310deg, #268d94 25%, #417b52 100%);
+	}
 	@media screen and (max-width: 1700px) {
 		padding: 12px 24px;
 	}

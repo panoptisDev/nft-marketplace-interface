@@ -1,12 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 // import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers/lib/web3-provider'
-// import { parseEther } from '@ethersproject/units'
+import { parseEther } from '@ethersproject/units'
 import { DOMAIN_TYPE, NFT_METHODS } from 'constants/constants'
+import { FACTORY_ADDRESS } from 'constants/networks'
 
-// import { FACTORY_ADDRESS, NFT_ADDRESS } from 'constants/networks'
 import {
-	callContract, // getFactoryContract,
+	callContract,
+	getFactoryContract,
 	getNFTContract
 } from '../hooks/useContract'
 
@@ -75,51 +76,35 @@ export const getOwnerDomains = async (
 export const createFixedPrice = async (
 	library: Web3Provider,
 	account: string,
-	nftType: DOMAIN_TYPE,
 	nftId: BigNumber,
 	price: string
 ) => {
-	console.log(library, account, nftType, nftId, price)
-	// let nft = TLD_DOMAIN
-	// let contract = getTLDDomainContract(library, account)
-	// if (nftType === DOMAIN_TYPE.Domain) {
-	// 	nft = DOMAIN
-	// 	contract = getDomainContract(library, account)
-	// }
-	// await callContract(contract, NFT_METHODS.approve, [FACTORY_ADDRESS, nftId])
-	// const factoryContract = getFactoryContract(library, account)
-	// return callContract(factoryContract, 'createFixedPrice', [
-	// 	nft,
-	// 	nftId,
-	// 	parseEther(price.toString())
-	// ])
+	let nftContract = getNFTContract(library, account)
+	await callContract(nftContract, NFT_METHODS.approve, [FACTORY_ADDRESS, nftId])
+	const factoryContract = getFactoryContract(library, account)
+	return callContract(factoryContract, 'createFixedPrice', [
+		nftId,
+		parseEther(price.toString())
+	])
 }
 
 export const createAuction = async (
 	library: Web3Provider,
 	account: string,
-	nftType: DOMAIN_TYPE,
 	nftId: BigNumber,
 	startPrice: string,
 	minBidIncrement: string,
 	duration: string // days
 ) => {
-	console.log(library, account, nftType, nftId, startPrice, duration)
-	// let nft = TLD_DOMAIN
-	// let contract = getTLDDomainContract(library, account)
-	// if (nftType === DOMAIN_TYPE.Domain) {
-	// 	nft = DOMAIN
-	// 	contract = getDomainContract(library, account)
-	// }
-	// await callContract(contract, NFT_METHODS.approve, [FACTORY_ADDRESS, nftId])
-	// const factoryContract = getFactoryContract(library, account)
-	// return callContract(factoryContract, 'createAuction', [
-	// 	nft,
-	// 	nftId,
-	// 	parseEther(startPrice),
-	// 	parseEther(minBidIncrement),
-	// 	+duration * 24 * 60 * 60
-	// ])
+	let nftContract = getNFTContract(library, account)
+	await callContract(nftContract, NFT_METHODS.approve, [FACTORY_ADDRESS, nftId])
+	const factoryContract = getFactoryContract(library, account)
+	return callContract(factoryContract, 'createAuction', [
+		nftId,
+		parseEther(startPrice),
+		parseEther(minBidIncrement),
+		+duration * 24 * 60 * 60
+	])
 }
 
 // export const placeBid = async (

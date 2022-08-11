@@ -2,8 +2,8 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address payable",
-				"name": "eoa",
+				"internalType": "address",
+				"name": "_originOwner",
 				"type": "address"
 			},
 			{
@@ -23,6 +23,11 @@
 			},
 			{
 				"internalType": "uint256",
+				"name": "_minBidIncrement",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "_duration",
 				"type": "uint256"
 			}
@@ -36,7 +41,7 @@
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "sender",
+				"name": "bidder",
 				"type": "address"
 			},
 			{
@@ -50,17 +55,49 @@
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "auctionState",
-		"outputs": [
+		"anonymous": false,
+		"inputs": [
 			{
-				"internalType": "enum Auction.State",
-				"name": "",
-				"type": "uint8"
+				"indexed": true,
+				"internalType": "address",
+				"name": "claimer",
+				"type": "address"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
+		"name": "Claim",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "ender",
+				"type": "address"
+			}
+		],
+		"name": "End",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "starter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Start",
+		"type": "event"
 	},
 	{
 		"inputs": [
@@ -83,14 +120,21 @@
 	},
 	{
 		"inputs": [],
-		"name": "cancelAuction",
+		"name": "cancel",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "endBlock",
+		"name": "claim",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "endAt",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -103,9 +147,28 @@
 	},
 	{
 		"inputs": [],
-		"name": "finalizeAuction",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"name": "getState",
+		"outputs": [
+			{
+				"internalType": "enum ISale.State",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "highestBid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -113,7 +176,7 @@
 		"name": "highestBidder",
 		"outputs": [
 			{
-				"internalType": "address payable",
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -123,7 +186,20 @@
 	},
 	{
 		"inputs": [],
-		"name": "highestBindingBid",
+		"name": "nft",
+		"outputs": [
+			{
+				"internalType": "contract IERC721",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "nftId",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -136,12 +212,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "ipfsHash",
+		"name": "originOwner",
 		"outputs": [
 			{
-				"internalType": "string",
+				"internalType": "address",
 				"name": "",
-				"type": "string"
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -152,7 +228,7 @@
 		"name": "owner",
 		"outputs": [
 			{
-				"internalType": "address payable",
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -176,24 +252,31 @@
 	{
 		"inputs": [],
 		"name": "placeBid",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "startTime",
+		"name": "startAt",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "state",
+		"outputs": [
+			{
+				"internalType": "enum ISale.State",
+				"name": "",
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
